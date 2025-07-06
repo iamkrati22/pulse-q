@@ -4,6 +4,10 @@ PulseQ is a Kafka-powered microservice-based application that collects, categori
 
 ---
 
+## 🎥 Live Demo
+
+[![Watch the demo](https://cdn.loom.com/sessions/thumbnails/29f471a2f5cc49c3b7ba3500a7450c5f-cd0176f6e0fd7ee4-full-play.gif)](https://www.loom.com/share/29f471a2f5cc49c3b7ba3500a7450c5f?t=99&sid=10182ef9-bd74-425a-99cc-c2b184bae929)
+
 ## 👋 Overview
 
 **Frontend:** React.js + Tailwind CSS
@@ -129,9 +133,6 @@ pulseq/
 
 ---
 
-## 🎥 Live Demo
-
-[![Watch the demo](https://cdn.loom.com/sessions/thumbnails/29f471a2f5cc49c3b7ba3500a7450c5f-cd0176f6e0fd7ee4-full-play.gif)](https://www.loom.com/share/29f471a2f5cc49c3b7ba3500a7450c5f?t=99&sid=10182ef9-bd74-425a-99cc-c2b184bae929)
 
 
 ## 📢 Contributions
