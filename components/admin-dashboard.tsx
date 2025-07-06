@@ -98,8 +98,79 @@ export default function AdminDashboard() {
     setSystemLogs(sampleLogs)
   }, [])
 
-  // Listen for new feedback from the form
+  // WebSocket connection for real-time logs
   useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8080')
+
+    ws.onopen = () => {
+      console.log('🔌 Connected to Logger Service WebSocket')
+      // Add connection log
+      const connectionLog: SystemLog = {
+        id: Date.now(),
+        message: "Connected to real-time logger service",
+        timestamp: new Date().toISOString(),
+        type: "success",
+      }
+      setSystemLogs((prev) => [connectionLog, ...prev.slice(0, 9)])
+    }
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data)
+        
+        if (data.type === 'feedback_log') {
+          const logData = data.data
+          
+          // Add real-time system log
+          const newLog: SystemLog = {
+            id: Date.now(),
+            message: `${logData.service || 'Unknown'} service processed ${logData.action || 'feedback'}`,
+            timestamp: new Date().toISOString(),
+            type: "success",
+          }
+          setSystemLogs((prev) => [newLog, ...prev.slice(0, 9)])
+
+          // If this is a new feedback, add it to the list
+          if (logData.name || logData.email) {
+            const newFeedback: Feedback = {
+              id: Date.now(),
+              name: logData.name || "Anonymous",
+              email: logData.email || "",
+              category: logData.category || "other",
+              message: logData.message || "",
+              timestamp: logData.timestamp || new Date().toISOString(),
+            }
+            setFeedbacks((prev) => [newFeedback, ...prev])
+          }
+        }
+      } catch (error) {
+        console.error('WebSocket message parsing error:', error)
+      }
+    }
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+      const errorLog: SystemLog = {
+        id: Date.now(),
+        message: "WebSocket connection error - using fallback mode",
+        timestamp: new Date().toISOString(),
+        type: "warning",
+      }
+      setSystemLogs((prev) => [errorLog, ...prev.slice(0, 9)])
+    }
+
+    ws.onclose = () => {
+      console.log('🔌 Disconnected from Logger Service WebSocket')
+      const disconnectLog: SystemLog = {
+        id: Date.now(),
+        message: "Disconnected from logger service",
+        timestamp: new Date().toISOString(),
+        type: "warning",
+      }
+      setSystemLogs((prev) => [disconnectLog, ...prev.slice(0, 9)])
+    }
+
+    // Listen for new feedback from the form (fallback)
     const handleNewFeedback = (event: CustomEvent) => {
       const newFeedback = event.detail as Feedback
       setFeedbacks((prev) => [newFeedback, ...prev])
@@ -115,7 +186,11 @@ export default function AdminDashboard() {
     }
 
     window.addEventListener("newFeedback", handleNewFeedback as EventListener)
-    return () => window.removeEventListener("newFeedback", handleNewFeedback as EventListener)
+
+    return () => {
+      ws.close()
+      window.removeEventListener("newFeedback", handleNewFeedback as EventListener)
+    }
   }, [])
 
   // Filter feedbacks based on search and categories

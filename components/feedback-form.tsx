@@ -73,8 +73,25 @@ export default function FeedbackForm() {
     setIsSubmitting(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Connect to our backend feedback API
+      const response = await fetch('http://localhost:5000/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          category: formData.category,
+          message: formData.message,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
 
       toast({
         title: "Feedback Submitted Successfully! 🎉",
@@ -86,7 +103,7 @@ export default function FeedbackForm() {
       setFormData({ name: "", email: "", category: "", message: "" })
       setErrors({})
 
-      // Simulate adding to global feedback store (for demo)
+      // Dispatch event for real-time updates
       const event = new CustomEvent("newFeedback", {
         detail: {
           ...formData,
@@ -96,6 +113,7 @@ export default function FeedbackForm() {
       })
       window.dispatchEvent(event)
     } catch (error) {
+      console.error('Feedback submission error:', error)
       toast({
         title: "Submission Failed",
         description: "There was an error submitting your feedback. Please try again.",
