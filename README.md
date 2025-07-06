@@ -1,30 +1,141 @@
-# PulseQ Frontend Development
+# PulseQ — Real-Time Feedback Processing System
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+PulseQ is a Kafka-powered microservice-based application that collects, categorizes, and processes user feedback in real time. It features a beautiful frontend interface and a robust backend architecture suitable for demonstrating Kafka and microservice expertise.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/iamkrati22s-projects/v0-pulse-q-frontend-development)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/vh4D4mEVDXh)
+---
 
-## Overview
+## 👋 Overview
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+**Frontend:** React.js + Tailwind CSS
 
-## Deployment
+**Backend:** Node.js microservices
 
-Your project is live at:
+**Core Tech:** Apache Kafka, Docker Compose, WebSockets, Express.js
 
-**[https://vercel.com/iamkrati22s-projects/v0-pulse-q-frontend-development](https://vercel.com/iamkrati22s-projects/v0-pulse-q-frontend-development)**
+**Use Case:** Real-time routing of feedback into separate services based on category (Complaint, Suggestion, Praise), with a live dashboard for admins.
 
-## Build your app
+---
 
-Continue building your app on:
+## 🌍 Live Roles
 
-**[https://v0.dev/chat/projects/vh4D4mEVDXh](https://v0.dev/chat/projects/vh4D4mEVDXh)**
+### 👤 User Interface
 
-## How It Works
+* Submit feedback form with name, email, category, and message.
+* Realtime toast confirmation.
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+### 💼 Admin Dashboard
+
+* Live table of incoming feedback.
+* Category filtering.
+* Analytics via Pie/Bar charts.
+* Real-time log viewer (via WebSocket).
+* Toggle between views or view both side-by-side on wide screens.
+
+---
+
+## 📊 Architecture Diagram
+
+```text
+[ User Frontend ]
+        |
+        v
+[ Feedback API ] ---> Kafka Topic: feedback-submitted
+        |
+        v
+[ Router Service ]
+    |     |      |
+    v     v      v
+Support  Product  Marketing Services
+    \     |     /
+      --> Logger Service --> WebSocket --> Admin Dashboard
+```
+
+---
+
+## 🚀 Technologies
+
+| Component        | Stack                                   |
+| ---------------- | --------------------------------------- |
+| Frontend         | React.js, Tailwind CSS, Axios, Chart.js |
+| Backend Services | Node.js (Express), KafkaJS              |
+| Broker System    | Kafka, Zookeeper                        |
+| Real-Time Logs   | WebSocket (Socket.IO)                   |
+| DevOps           | Docker, Docker Compose                  |
+
+---
+
+## 🔧 Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/yourusername/pulseq.git
+cd pulseq
+```
+
+### 2. Start Docker Services
+
+```bash
+docker-compose build
+docker-compose up -d
+```
+
+### 3. Access Local Services
+
+| Service      | URL                                            |
+| ------------ | ---------------------------------------------- |
+| Frontend     | [http://localhost:3000](http://localhost:3000) |
+| Feedback API | [http://localhost:5000](http://localhost:5000) |
+| Logger WS    | ws\://localhost:5050                           |
+
+### 4. Stopping
+
+```bash
+docker-compose down
+```
+
+---
+
+## 🛀 Folder Structure
+
+```
+pulseq/
+├── docker-compose.yml
+├── frontend/           # React frontend
+├── feedback-api/       # Kafka producer service
+├── router-service/     # Kafka consumer + router
+├── support-service/    # Complaint handler
+├── product-service/    # Suggestion handler
+├── marketing-service/  # Praise handler
+├── logger-service/     # WebSocket log streamer
+```
+
+---
+
+## 📄 API Reference
+
+### POST /api/feedback
+
+**Submit feedback**
+
+```json
+{
+  "name": "Krati",
+  "email": "krati@example.com",
+  "category": "Complaint",
+  "message": "App crashes on submit."
+}
+```
+
+---
+
+
+## 📢 Contributions
+
+Feel free to fork, contribute, or suggest features via Issues or PRs!
+
+---
+
+## 🚗 License
+
+[MIT License](LICENSE)
